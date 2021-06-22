@@ -1,7 +1,7 @@
 ﻿/*
  * ADSR Envelope Test
  *
- * 2021.06.19
+ * 2021.06.22
  *
  */
 
@@ -31,6 +31,7 @@ typedef struct {
 	float amplitude;
 	float v1;
 	float v2;
+	float v3;
 	float t1;
 	float t2;
 } Envelope;
@@ -44,10 +45,13 @@ void Envelope_init(Envelope* p_env, float samplingPeriod)
 {
 	p_env->samplingPeriod = samplingPeriod;
 	p_env->state = stNone;
+	p_env->amplitude = 0.0f;
+	p_env->v3 = 0.0f;
 }
 
 void Envelope_gateOn(Envelope* p_env)
 {
+	p_env->v3 = p_env->amplitude;
 	p_env->tick = 0;
 	p_env->state = stAttack;
 }
@@ -62,7 +66,7 @@ void Envelope_gateOff(Envelope* p_env)
 static float attack(Envelope* p_env, float t)
 {
 	float tau = p_env->attackR * p_env->capacitance / 1000.0f;
-	return 1.0f - expf(-t / tau);
+	return 1.0f - ( 1.0f - p_env->v3 ) * expf( -t / tau );
 }
 
 static float decay(Envelope* p_env, float t)
@@ -109,10 +113,10 @@ float Envelope_step(Envelope* p_env)
 	return p_env->amplitude;
 }
 
-#define LOOP_N (2)
-#define STEP_LENGTH (100)
-#define GATE_LENGTH (50)
-#define SAMPLING_PERIOD (0.01f)
+#define LOOP_N (3)
+#define STEP_LENGTH (1000)
+#define GATE_LENGTH (500)
+#define SAMPLING_PERIOD (0.001f)
 
 int main()
 {
@@ -120,8 +124,8 @@ int main()
 
 	Envelope_init(&env, SAMPLING_PERIOD);
 	env.capacitance = 22;
-	env.attackR = 1;
-	env.decayR = 3;
+	env.attackR = 3;
+	env.decayR = 4;
 	env.releaseR = 10;
 	env.sustainLevel = 0.3;
 
