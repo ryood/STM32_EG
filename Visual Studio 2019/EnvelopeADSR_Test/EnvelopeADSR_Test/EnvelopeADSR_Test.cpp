@@ -72,13 +72,13 @@ static float attack(Envelope* p_env, float t)
 static float decay(Envelope* p_env, float t)
 {
 	float tau = p_env->decayR * p_env->capacitance / 1000.0f;
-	return ( p_env->v1 - p_env->sustainLevel ) * expf( -( t - p_env->t1 ) / tau  ) + p_env->sustainLevel;
+	return ( p_env->v1 - p_env->sustainLevel ) * expf( -( t - p_env->t1 ) / tau ) + p_env->sustainLevel;
 }
 
 static float release(Envelope* p_env, float t)
 {
 	float tau = p_env->releaseR * p_env->capacitance / 1000.0f;
-	return p_env->v2 * expf( -( t - p_env->t2 ) / tau);
+	return p_env->v2 * expf( -( t - p_env->t2 ) / tau );
 }
 
 float Envelope_step(Envelope* p_env)
@@ -113,7 +113,7 @@ float Envelope_step(Envelope* p_env)
 	return p_env->amplitude;
 }
 
-#define LOOP_N (3)
+#define LOOP_N (2)
 #define STEP_LENGTH (1000)
 #define GATE_LENGTH (500)
 #define SAMPLING_PERIOD (0.001f)
